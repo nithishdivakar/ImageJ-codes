@@ -18,11 +18,10 @@ public class BilateralFilter_  implements PlugInFilter{
 	}
 	@Override
 	public void run(ImageProcessor ip) {
-		int LEVEL = 8;
 		int h = ip.getHeight();
 		int w = ip.getWidth();
 		
-		ImagePlus imOut = IJ.createImage("min filter","8bit", w, h, 1);
+		ImagePlus imOut = IJ.createImage("Bilateral filter","8bit", w, h, 1);
 		ImageProcessor ipProc = imOut.getProcessor();
 		
 		float[][] OUT = bilateralFilter(ip.getFloatArray(),3);
@@ -46,7 +45,7 @@ public class BilateralFilter_  implements PlugInFilter{
 		MirrorBoundaryMatrix InImg = new MirrorBoundaryMatrix(I);
 		MirrorBoundaryMatrix OuImg = new MirrorBoundaryMatrix(I.length,I[0].length);
 		
-		double sigma_G=5.0,sigma_D=5.0;
+		double sigma_G=32.0,sigma_D=32.0;
 		
 		// float[][] G=Kernels.GaussianKernal(1, sigma_G);
 		
@@ -57,7 +56,7 @@ public class BilateralFilter_  implements PlugInFilter{
 				
 				float ker = 0.0f;
 				
-				ker = domainKernel(x,y,x+i,y+j,InImg.getPixel(x, y),InImg.getPixel(x+i, y+j),32.0,32.0);
+				ker = domainKernel(x,y,x+i,y+j,InImg.getPixel(x, y),InImg.getPixel(x+i, y+j),sigma_D,sigma_G);
 				pix_val += InImg.getPixel(i+x, j+y)*ker;
 				normali += ker;
 			}
