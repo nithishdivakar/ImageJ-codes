@@ -29,7 +29,11 @@ public class WaveletDecompositionDemo_ implements PlugInFilter{
 		
 		copy(I,Q,0,0);
 		for (int l=0;l<LEVELS;l++){
-			copy(wavelet_decompose(Q),O,0,0);
+			float [][][]T = wavelet_decompose(Q);
+			copy(T[0],O,0,0);
+			copy(T[1],O,T[1].length,0);
+			copy(T[2],O,0,T[2][0].length);
+			copy(T[3],O,Q.length/2,Q[0].length/2);
 			Q = new float[Q.length/2][Q[0].length/2];
 			for(int i=0;i<Q.length;i++){for(int j=0;j<Q[0].length;j++){
 				Q[i][j] = O[i][j];
@@ -41,7 +45,7 @@ public class WaveletDecompositionDemo_ implements PlugInFilter{
 	}
 	
 	
-	float[][] wavelet_decompose(float I[][]){
+	float[][][] wavelet_decompose(float I[][]){
 		float [][]ker_L_x = {{1/2.0f,1/2.0f,0}};
 		float [][]ker_L_y = {{1/2.0f},{1/2.0f},{0}};
 		float [][]ker_H_x = {{1.0f/1.414f,-1.0f/1.414f,0.0f}};
@@ -55,18 +59,17 @@ public class WaveletDecompositionDemo_ implements PlugInFilter{
 		float [][]HH = filter(H,ker_H_y,1,0); HH = downsample_y(HH);
 		
 		
-		float [][]Img = new float[I.length][I[0].length];
-		copy(LL,Img,0,0);
-		copy(HL,Img,I.length/2,0);
-		copy(LH,Img,0,I[0].length/2);
-		copy(HH,Img,I.length/2,I[0].length/2);
+		float [][][]Img = new float[4][I.length/2][I[0].length/2];
+		copy(LL,Img[0],0,0);
+		copy(HL,Img[1],0,0);
+		copy(LH,Img[2],0,0);
+		copy(HH,Img[3],0,0);
 		return Img;
 	}
 	
 	void copy(float [][]src,float [][]des, int x, int y){
 		for(int i=0;i<src.length;i++){for(int j=0;j<src[0].length;j++){
 			des[i+x][j+y] = src[i][j];
-			
 		}}
 	}
 	
